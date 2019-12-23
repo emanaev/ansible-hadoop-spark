@@ -1,0 +1,12 @@
+
+- name: Format HDFS
+  command: '{{ service_dir }}/hadoop-{{ hadoop_version }}/bin/hdfs namenode -format'
+  when: (inventory_hostname in groups['hadoop_master'])
+
+- name: Start HDFS
+  command: '{{ service_dir }}/hadoop-{{ hadoop_version }}/sbin/start-dfs.sh'
+  when: (inventory_hostname in groups['hadoop_master'])
+
+- name: Start YARN
+  command: 'ssh {{inventory_hostname}} "{{ service_dir }}/hadoop-{{ hadoop_version }}/sbin/start-yarn.sh"' # I have no idea why it runs only that way
+  when: (inventory_hostname in groups['hadoop_master'])

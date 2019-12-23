@@ -1,0 +1,107 @@
+- name: Check hadoop file
+  stat: 
+    path: "/tmp/hadoop-{{ hadoop_version }}.tar.gz"
+  register: downloaded
+
+- name: Download hadoop
+  get_url: 
+    url: 'http://mirror.intergrid.com.au/apache/hadoop/common/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz'
+    dest: /tmp/
+  when: downloaded.stat.exists == false
+
+- name: Remove old project dir
+  file:
+    path: "{{service_dir}}"
+    state: absent
+
+- name: Create project dir
+  file:
+    path: "{{service_dir}}"
+    state: directory
+
+- name: Unpack hadoop source code
+  unarchive: 
+    src: "/tmp/hadoop-{{ hadoop_version }}.tar.gz"
+    dest: "{{ service_dir }}"
+    remote_src: yes
+
+- name: Add HADOOP_HOME
+  lineinfile:
+    dest: /home/ubuntu/.bashrc
+    insertafter: 'EOF'  
+    line: 'export HADOOP_HOME={{ service_dir }}/hadoop-{{ hadoop_version }}'
+
+- name: Add path
+  lineinfile: 
+    dest: /home/ubuntu/.bashrc
+    insertafter: 'EOF'  
+    line: 'export PATH="$PATH:{{ service_dir }}/hadoop-{{ hadoop_version }}/bin"' 
+    state: present
+
+- name: Refresh .bashrc
+  shell: source /home/ubuntu/.bashrc
+  args: 
+    executable: /bin/bash
+
+- name: Generate hadoop-env.sh for hadoop
+  template: 
+    src: hadoop-env.j2 
+    dest: "{{ service_dir }}/hadoop-{{ hadoop_version }}/etc/hadoop/hadoop-env.sh"
+    owner: "{{ uusername }}" 
+    mode: 0644
+
+- name: Generate core-site.xml for hadoop
+  template: 
+    src: core-site.j2 
+    dest: "{{ service_dir }}/hadoop-{{ hadoop_version }}/etc/hadoop/core-site.xml"
+    owner: "{{ uusername }}"
+    mode: 0644
+
+- name: Generate workers for hadoop
+  template: 
+    src: workers.j2
+    dest: "{{ service_dir }}/hadoop-{{ hadoop_version }}/etc/hadoop/workers"
+    owner: "{{ uusername }}"
+    mode: 0644
+
+- name: Generate hdfs-site.xml for hadoop
+  template: 
+    src: hdfs-site.j2 
+    dest: "{{ service_dir }}/hadoop-{{ hadoop_version }}/etc/hadoop/hdfs-site.xml"
+    owner: "{{ uusername }}"
+    mode: 0644
+
+- name: Generate yarn-env.sh for hadoop
+  template: 
+    src: yarn-env.j2 
+    dest: "{{ service_dir }}/hadoop-{{ hadoop_version }}/etc/hadoop/yarn-env.sh"
+    owner: "{{ uusername }}" 
+    mode: 0644
+
+- name: Generate yarn-site.xml for hadoop
+  template: 
+    src: yarn-site.j2 
+    dest: "{{ service_dir }}/hadoop-{{ hadoop_version }}/etc/hadoop/yarn-site.xml" 
+    owner: "{{ uusername }}" 
+    mode: 0644
+
+- name: Generate mapred-site.xml for hadoop
+  template: 
+    src: mapred-site.j2 
+    dest: "{{ service_dir }}/hadoop-{{ hadoop_version }}/etc/hadoop/mapred-site.xml" 
+    owner: "{{ uusername }}"
+    mode: 0644
+
+- name: Generate capacity-scheduler.xml for hadoop
+  template: 
+    src: capacity-scheduler.xml 
+    dest: "{{ service_dir }}/hadoop-{{ hadoop_version }}/etc/hadoop/capacity-scheduler.xml" 
+    owner: "{{ uusername }}"
+    mode: 0644
+
+- name: Generate hive-site.j2 for hadoop
+  template: 
+    src: hive-site.j2 
+    dest: "{{ service_dir }}/hadoop-{{ hadoop_version }}/etc/hadoop/hive-site.xml"
+    owner: "{{ uusername }}" 
+    mode: 0644

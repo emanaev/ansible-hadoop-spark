@@ -1,0 +1,17 @@
+- name: System setup
+  hosts: all
+  remote_user: root
+  roles:
+    - role: common
+
+- name: Hadoop setup
+  hosts: all
+  remote_user: "{{uusername}}"
+  roles:
+    - role: hadoop
+
+- name: Spark setup
+  hosts: all
+  remote_user: "{{uusername}}"
+  roles:
+    - role: spark
