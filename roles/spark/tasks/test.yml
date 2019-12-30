@@ -1,0 +1,10 @@
+
+- name: Run Spark test app
+  shell: >
+    spark-submit --class org.apache.spark.examples.SparkPi
+    --master yarn --deploy-mode client
+    --driver-memory 4g --executor-memory 2g --executor-cores 1
+    {{ service_dir }}/spark-{{ spark_version }}-bin-hadoop2.7/examples/jars/spark-examples*.jar 10
+  args: 
+    executable: /bin/bash
+  when: (inventory_hostname in groups['hadoop_master'])

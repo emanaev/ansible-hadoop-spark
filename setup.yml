@@ -10,8 +10,8 @@
   roles:
     - role: hadoop
 
-- name: Spark setup
-  hosts: all
-  remote_user: "{{uusername}}"
-  roles:
-    - role: spark
+# - name: Spark setup
+#   hosts: all
+#   remote_user: "{{uusername}}"
+#   roles:
+#     - role: spark

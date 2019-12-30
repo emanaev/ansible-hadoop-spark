@@ -1,4 +1,4 @@
-uusername: ubuntu
+uusername: hduser
 ssh_pub_key_path: /Users/emanaev/.ssh/id_rsa.pub
 service_dir: "/home/{{uusername}}/project"
 data_dir: "/home/{{uusername}}/project/data"

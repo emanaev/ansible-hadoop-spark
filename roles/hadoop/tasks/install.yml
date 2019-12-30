@@ -27,19 +27,19 @@
 
 - name: Add HADOOP_HOME
   lineinfile:
-    dest: /home/ubuntu/.bashrc
+    dest: '/home/{{uusername}}/.bashrc'
     insertafter: 'EOF'  
     line: 'export HADOOP_HOME={{ service_dir }}/hadoop-{{ hadoop_version }}'
 
 - name: Add path
   lineinfile: 
-    dest: /home/ubuntu/.bashrc
+    dest: '/home/{{uusername}}/.bashrc'
     insertafter: 'EOF'  
     line: 'export PATH="$PATH:{{ service_dir }}/hadoop-{{ hadoop_version }}/bin"' 
     state: present
 
 - name: Refresh .bashrc
-  shell: source /home/ubuntu/.bashrc
+  shell: 'source /home/{{uusername}}/.bashrc'
   args: 
     executable: /bin/bash
 
