@@ -78,4 +78,16 @@
     <value>0.8</value>
     <description>Fraction of the number of maps in the job which should be complete before reduces are scheduled for the job. </description>
   </property>
+  <property>
+    <name>yarn.app.mapreduce.am.env</name>
+    <value>HADOOP_MAPRED_HOME={{ service_dir }}/hadoop-{{ hadoop_version }}</value>
+  </property>
+  <property>
+    <name>mapreduce.map.env</name>
+    <value>HADOOP_MAPRED_HOME={{ service_dir }}/hadoop-{{ hadoop_version }}</value>
+  </property>
+  <property>
+    <name>mapreduce.reduce.env</name>
+    <value>HADOOP_MAPRED_HOME={{ service_dir }}/hadoop-{{ hadoop_version }}</value>
+  </property>
 </configuration>

@@ -1,6 +1,8 @@
 
 - name: Format HDFS
-  command: '{{ service_dir }}/hadoop-{{ hadoop_version }}/bin/hdfs namenode -format'
+  shell: 'source /home/{{uusername}}/.hadooprc && hdfs namenode -format'
+  args:
+    executable: /bin/bash
   when: (inventory_hostname in groups['hadoop_master'])
 
 - name: Start HDFS
@@ -8,8 +10,8 @@
   when: (inventory_hostname in groups['hadoop_master'])
 
 - name: Create HDFS home folder
-  shell: '{{ service_dir }}/hadoop-{{ hadoop_version }}/bin/hdfs dfs -mkdir {{item}}'
-  args: 
+  shell: 'source /home/{{uusername}}/.hadooprc && hdfs dfs -mkdir {{item}}'
+  args:
     executable: /bin/bash
   with_items:
     - /user

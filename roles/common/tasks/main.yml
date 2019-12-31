@@ -1,7 +1,9 @@
-- name: install OpenJDK 8
+- name: install OpenJDK 8, Maven
   apt:
-    name: openjdk-8-jdk-headless
-    state: present
+    pkg:
+      - openjdk-8-jdk
+      - maven
+      - git
     update_cache: yes
 
 # - name: Disable /etc/hosts autogeneration
@@ -46,7 +48,7 @@
     key: "{{ hostvars[item].master_ssh_pub_key.ssh_public_key }}"
   with_items: "{{groups['hadoop_master']}}"
 
-- name: Enable acces for local ssh key
+- name: Enable access for local ssh key
   authorized_key:
     user: "{{ uusername }}"
     state: present

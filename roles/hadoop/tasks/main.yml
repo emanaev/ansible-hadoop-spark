@@ -2,3 +2,4 @@
 
 - import_tasks: start.yml
 
+- import_tasks: check.yml

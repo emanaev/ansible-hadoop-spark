@@ -1,0 +1,8 @@
+- name: Check Yarn map-reduce works
+  shell: >
+    source /home/{{uusername}}/.hadooprc &&
+    yarn jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-{{hadoop_version}}.jar pi 16 100
+  args: 
+    executable: /bin/bash
+  when: (inventory_hostname in groups['hadoop_master'])
+

@@ -15,3 +15,9 @@
 #   remote_user: "{{uusername}}"
 #   roles:
 #     - role: spark
+
+- name: Play with Giraph
+  hosts: hadoop_master
+  remote_user: "{{uusername}}"
+  roles:
+    - role: graphapp
