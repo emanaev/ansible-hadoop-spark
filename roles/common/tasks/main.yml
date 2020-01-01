@@ -1,16 +1,11 @@
-- name: install OpenJDK 8, Maven
+- name: install OpenJDK 8, Maven, ...
   apt:
     pkg:
       - openjdk-8-jdk
       - maven
       - git
+      - mc
     update_cache: yes
-
-# - name: Disable /etc/hosts autogeneration
-#   lineinfile:
-#     path: /etc/cloud/cloud.cfg
-#     state: absent
-#     regexp: ^manage_etc_hosts.*$
 
 - name: Remove host name from /etc/hosts
   lineinfile:
@@ -18,7 +13,7 @@
     state: absent
     regexp: ^127\.0\.1\.1.*$
 
-- name: Update the /etc/hosts file with host name
+- name: Update the /etc/hosts file with host names
   lineinfile:
     path: /etc/hosts
     regexp: "{{ hostvars[item]['ansible_env'].SSH_CONNECTION.split(' ')[2] }}\t{{ hostvars[item]['ansible_hostname']}}"
@@ -26,30 +21,14 @@
     state: present
   with_items: "{{groups['all']}}"
 
-- name: Create user "{{ uusername }}" on slaves
+- name: Create user "{{ uusername }}"
   user:
     name: "{{ uusername }}"
     shell: /bin/bash
-  when: (inventory_hostname in groups['hadoop_node'])
-  
-- name: Create user "{{ uusername }}" for master
-  user:
-    name: "{{ uusername }}"
-    shell: /bin/bash
-    generate_ssh_key: yes
-    ssh_key_comment: "{{ uusername }}@{{ ansible_hostname }}"
-  register: master_ssh_pub_key
-  when: (inventory_hostname in groups['hadoop_master'])
 
-- name: Distribute master ssh public key to nodes
-  authorized_key:
-    user: "{{ uusername }}"
-    state: present
-    key: "{{ hostvars[item].master_ssh_pub_key.ssh_public_key }}"
-  with_items: "{{groups['hadoop_master']}}"
-
-- name: Enable access for local ssh key
+- name: Enable access for local client ssh key
   authorized_key:
     user: "{{ uusername }}"
     state: present
     key: "{{ lookup('file', ssh_pub_key_path) }}"
+

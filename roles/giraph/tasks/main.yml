@@ -1,0 +1,12 @@
+# - name: Download data
+#   shell: >
+#     source /home/{{uusername}}/.hadooprc &&
+#     curl -sL https://snap.stanford.edu/data/bigdata/communities/com-friendster.ungraph.txt.gz |
+#     gunzip |
+#     hdfs dfs -put - /user/{{uusername}}/graph.txt
+#   args: 
+#     executable: /bin/bash
+
+- import_tasks: install.yml
+
+- import_tasks: check.yml

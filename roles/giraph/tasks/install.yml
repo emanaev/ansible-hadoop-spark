@@ -1,0 +1,17 @@
+- name: Download Giraph
+  shell: >
+    cd {{service_dir}} &&
+    git clone -b release-1.2 https://github.com/apache/giraph.git &&
+    cd giraph &&
+    sed -i 's/2.5.1/{{hadoop_version}}/' pom.xml
+  args:
+    executable: /bin/bash
+
+- name: Build Giraph
+  shell: >
+    source /home/{{uusername}}/.hadooprc &&
+    cd {{service_dir}}/giraph &&
+    mvn package -Phadoop_2 -DskipTests
+  args:
+    executable: /bin/bash
+  

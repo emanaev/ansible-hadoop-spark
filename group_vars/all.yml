@@ -3,8 +3,9 @@ ssh_pub_key_path: /Users/emanaev/.ssh/id_rsa.pub
 service_dir: "/home/{{uusername}}/project"
 data_dir: "/home/{{uusername}}/project/data"
 java_home: /usr/lib/jvm/java-8-openjdk-amd64
-hadoop_version: 3.2.1
+hadoop_version: 2.10.0
 namenode_host: "{{groups['hadoop_master'][0]}}"
+
 master_ip: "{{groups['hadoop_master'][0]}}"
 spark_master_host: "{{groups['hadoop_master'][0]}}"
 spark_version: 2.4.4

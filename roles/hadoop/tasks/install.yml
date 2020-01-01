@@ -1,13 +1,13 @@
-- name: Check hadoop file
+- name: Check hadoop distrib downloaded
   stat: 
     path: "/tmp/hadoop-{{ hadoop_version }}.tar.gz"
-  register: downloaded
+  register: hadoop_downloaded
 
-- name: Download hadoop
+- name: Download hadoop distrib
   get_url: 
     url: 'http://mirror.intergrid.com.au/apache/hadoop/common/hadoop-{{ hadoop_version }}/hadoop-{{ hadoop_version }}.tar.gz'
     dest: /tmp/
-  when: downloaded.stat.exists == false
+  when: hadoop_downloaded.stat.exists == false
 
 - name: Remove old project dir
   file:
@@ -25,18 +25,18 @@
     dest: "{{ service_dir }}"
     remote_src: yes
 
-- name: Add HADOOP_HOME
+- name: Generate .hadooprc for HADOOP_PREFIX and others
+  template: 
+    src: hadooprc.j2 
+    dest: /home/{{uusername}}/.hadooprc
+    owner: "{{ uusername }}" 
+    mode: 0644
+
+- name: Add .hadooprc to .bashrc
   lineinfile:
     dest: /home/{{uusername}}/.bashrc
     insertafter: 'EOF'  
-    line: 'source .hadooprc'
-
-- name: Generate .hadooprc
-  template: 
-    src: hadooprc.j2 
-    dest: "/home/{{uusername}}/.hadooprc"
-    owner: "{{ uusername }}" 
-    mode: 0644
+    line: 'source ~/.hadooprc'
 
 - name: Generate hadoop-env.sh for hadoop
   template: 

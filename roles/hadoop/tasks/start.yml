@@ -5,19 +5,44 @@
     executable: /bin/bash
   when: (inventory_hostname in groups['hadoop_master'])
 
-- name: Start HDFS
-  command: '{{ service_dir }}/hadoop-{{ hadoop_version }}/sbin/start-dfs.sh'
-  when: (inventory_hostname in groups['hadoop_master'])
-
-- name: Create HDFS home folder
-  shell: 'source /home/{{uusername}}/.hadooprc && hdfs dfs -mkdir {{item}}'
+- name: Start HDFS name node
+  shell: >
+    source /home/{{uusername}}/.hadooprc &&
+    hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start namenode
   args:
     executable: /bin/bash
-  with_items:
-    - /user
-    - '/user/{{uusername}}'
   when: (inventory_hostname in groups['hadoop_master'])
 
-- name: Start YARN
-  command: 'ssh {{inventory_hostname}} "{{ service_dir }}/hadoop-{{ hadoop_version }}/sbin/start-yarn.sh"' # I have no idea why it runs only that way
+- name: Start HDFS data nodes
+  shell: >
+    source /home/{{uusername}}/.hadooprc &&
+    hadoop-daemon.sh --config $HADOOP_CONF_DIR --script hdfs start datanode
+  args:
+    executable: /bin/bash
+  when: (inventory_hostname in groups['hadoop_node'])
+
+- name: Create HDFS home folder
+  shell: >
+    source /home/{{uusername}}/.hadooprc &&
+    hdfs dfs -mkdir /user &&
+    hdfs dfs -mkdir /user/hduser
+  args:
+    executable: /bin/bash
   when: (inventory_hostname in groups['hadoop_master'])
+
+- name: Start YARN resource manager
+  shell: >
+    source /home/{{uusername}}/.hadooprc &&
+    yarn-daemon.sh --config $HADOOP_CONF_DIR start resourcemanager
+  args:
+    executable: /bin/bash
+  when: (inventory_hostname in groups['hadoop_master'])
+
+- name: Start YARN node managers
+  shell: >
+    source /home/{{uusername}}/.hadooprc &&
+    yarn-daemon.sh --config $HADOOP_CONF_DIR start nodemanager
+  args:
+    executable: /bin/bash
+  when: (inventory_hostname in groups['hadoop_node'])
+

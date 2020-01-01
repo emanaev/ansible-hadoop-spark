@@ -20,4 +20,4 @@
   hosts: hadoop_master
   remote_user: "{{uusername}}"
   roles:
-    - role: graphapp
+    - role: giraph

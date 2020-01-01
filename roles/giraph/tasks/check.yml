@@ -1,0 +1,28 @@
+- name: Upload test graph
+  copy:
+    src: tiny_graph.txt
+    dest: /tmp/
+    owner: '{{uusername}}'
+    mode: '0644'
+
+- name: Upload test graph to HDFS
+  shell: >
+    source /home/{{uusername}}/.hadooprc &&
+    hdfs dfs -mkdir input &&
+    hdfs dfs -copyFromLocal /tmp/tiny_graph.txt input/tiny_graph.txt
+  args: 
+    executable: /bin/bash
+
+- name: Test run Giraph
+  shell: >
+    source /home/{{uusername}}/.hadooprc &&
+    yarn jar {{service_dir}}/giraph/giraph-examples/target/giraph-examples-1.2.0-for-hadoop-2.10.0-jar-with-dependencies.jar
+    org.apache.giraph.GiraphRunner
+    org.apache.giraph.examples.SimpleShortestPathsComputation
+    -vif org.apache.giraph.io.formats.JsonLongDoubleFloatDoubleVertexInputFormat
+    -vip /user/hduser/input/tiny_graph.txt
+    -vof org.apache.giraph.io.formats.IdWithValueTextOutputFormat
+    -op /user/hduser/output/shortestpaths
+    -w 1
+  args: 
+    executable: /bin/bash

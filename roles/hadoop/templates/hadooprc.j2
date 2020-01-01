@@ -1,4 +1,6 @@
 #!/bin/bash
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-export HADOOP_HOME={{ service_dir }}/hadoop-{{ hadoop_version }}
-export PATH="$PATH:{{ service_dir }}/hadoop-{{ hadoop_version }}/bin"
+export HADOOP_PREFIX={{ service_dir }}/hadoop-{{ hadoop_version }}
+export HADOOP_CONF_DIR=$HADOOP_PREFIX/etc/hadoop
+export PATH=$PATH:$HADOOP_PREFIX/bin:$HADOOP_PREFIX/sbin
+export CLASSPATH=`hadoop classpath`
